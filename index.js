@@ -21,7 +21,7 @@ const replacevalue =(tempval,orgval)=>{
 
 const server = http.createServer((req,res)=>{
 	if(req.url=='/'){
-		requests("http://api.openweathermap.org/data/2.5/weather?q=bhilai&appid=0522ed25a8f19b404be416ebf5e0f926")
+		requests("http://api.openweathermap.org/data/2.5/weather?q={your location}&appid={your API Key}")
 		.on("data",(chunk)=>{
 			const objdata = JSON.parse(chunk);
 			const arraydata = [objdata];
