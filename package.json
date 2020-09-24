@@ -1,0 +1,16 @@
+{
+  "name": "weather-app",
+  "version": "1.0.0",
+  "description": "Weather application built on node.js",
+  "main": "index.js",
+  "dependencies": {
+    "nodemon": "^2.0.4",
+    "requests": "^0.3.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Akshay Adme",
+  "license": "ISC"
+}

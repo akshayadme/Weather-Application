@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Weather Application</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" integrity="sha512-xA6Hp6oezhjd6LiLZynuukm80f8BoZ3OpcEYaqKoCV3HKQDrYjDE1Gu8ocxgxoXmwmSzM4iqPvCsOkQNiu41GA==" crossorigin="anonymous" />
+	<link href="https://fonts.googleapis.com/css2?family=David+Libre&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Prata&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@100&display=swap" rel="stylesheet">
+	<style>
+	.card{ 
+		display: flex;	
+		margin: 12% 30%;
+		width: 500px;	
+		height: 300px;
+	}
+	.left{
+		width:50%;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		border-radius:20px 0px 0px 20px;
+		background: linear-gradient(160deg,#1e90ff,#2ed573);
+		padding:0 10px;
+	}
+	#weathercon i{
+		font-size: 60px;
+		animation : transform 3s linear infinite alternate;
+	}
+	@keyframes transform{
+		0%{
+			transform: scale(0.6);
+		}
+		100%{
+			transform: scale(1);
+		}
+	}
+	#temperature{
+		font-size: 60px;
+		line-height: 0
+	}
+	#location{
+		line-height: 0;
+		font-family: 'David Libre', serif;
+	}
+	.right{
+		height: 100%;
+		width: 100%;
+		color:#fff;
+		background-color:#2f3542;
+		border-radius:0px 20px 20px 0px;
+
+	}
+	.up{
+		padding:20px;
+		font-family: 'Prata', serif;
+	}
+	.down{
+		text-align: center;
+		display: flex;
+		/*align-self: ;*/
+		line-height: 1;
+		flex-direction: column;
+	}
+	#date{
+		font-family: 'Grenze Gotisch', cursive;
+	}
+	#time{
+		font-size: 20px;
+		font-family: 'Grenze Gotisch', cursive;
+		font-weight: 600;
+	}
+	#minmax{
+		font-family: 'Prata', serif;
+		font-size: 13px;
+	}
+	#condition{
+		line-height: 0;
+		font-size: 20px;
+		font-weight: 400;
+		font-family: 'David Libre', serif;
+	}
+	</style>
+
+</head>
+<body>
+
+	<div class="card">
+		<div class="left">
+			<div id="weathercon"></div>
+			<div id="condition"><p>{%status%}</p></div>
+			<h1 id="temperature"></h1>
+			<h1 id="location"><i class="fas fa-map-marker-alt"></i>{%loc%},{%countary%}</h1>
+		</div>
+		<div class="right">
+			<div class="up">
+			<p>Wind <span style="float: right;">{%wind%} km/h</span></p>
+			<p>Humidity <span style="float: right;">{%humid%}%</span></p>
+			<p >Visibility <span style="float: right;" id="visible"></span></p>
+			</div>
+			<div class="down">
+			<h2 id="date"></h2>
+			<span id="time"></span>
+			<p id="minmax"> Min-Temp: <span id="mintemp"></span> | Max-Temp: <span id="maxtemp"></span></p>
+			</div>
+		</div>
+	</div>
+
+
+<script>
+
+	let condition = document.getElementById('weathercon');
+
+	let status = "{%tempstatus%}";
+	if(status == "Clouds"){
+		condition.innerHTML = "<i class='fas fa-cloud-sun'></i>";
+	} else if(status == "Sunny"){
+		condition.innerHTML = "<i class='fas fa-sun'></i>";
+	} else if(status == "Rain"){
+		condition.innerHTML = "<i class='fas fa-cloud-showers-heavy'></i>";
+	}else if(status == "Haze"){
+		condition.innerHTML = "<i class='fas fa-smog'></i>";
+	}else if(status == "Smoke"){
+		condition.innerHTML = "<i class='fas fa-smog'></i>";
+	}else{
+		condition.innerHTML = "<i class='fas fa-sun'></i>";
+	}
+
+	let temp = Number("{%temp%}");
+	let temperature = (temp-273.17).toFixed(2);
+	document.getElementById('temperature').innerHTML = temperature + '&deg;C';
+
+	let mintemp = Number("{%mintemp%}");
+	let mintemperature = (mintemp-273.17).toFixed(2);
+	document.getElementById('mintemp').innerHTML = mintemperature + '&deg;C';
+
+	let maxtemp = Number("{%maxtemp%}");
+	let maxtemperature = (maxtemp-273.17).toFixed(2);
+	document.getElementById('maxtemp').innerHTML = maxtemperature + '&deg;C';
+
+	let visible = Number("{%visible%}");
+	let orgvis = visible/1000;
+	document.getElementById('visible').innerHTML = orgvis + ' km';
+
+	let date = document.getElementById('date');
+	let time = document.getElementById('time');
+	function getDate(){
+		let fulldate = new Date();
+		let day = fulldate.getDay();
+		let date = fulldate.getDate();
+		let month = fulldate.getMonth();
+		let year = fulldate.getFullYear();
+
+		var weekday = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+
+		var exactmonth = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+		return `${weekday[day]} | ${date} ${exactmonth[month]} ${year}`;
+	}
+	date.innerHTML = getDate();
+
+	function getTime(){
+	   let date = new Date();
+	   let hour = date.getHours();
+	   let min = date.getMinutes();
+	   
+	   let period = "AM"
+	  	if(hour>11){
+	  		period = "PM";
+	  		if(hour>12) hour -= 12;
+	  	}
+	  	if(min<10){
+	  		min = "0"+min;
+	  	}
+	  	return `${hour}:${min} ${period}`;
+	}
+	time.innerHTML=getTime();
+</script>
+</body>
+</html>
